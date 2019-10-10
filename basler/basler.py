@@ -1,9 +1,11 @@
 from pypylon import pylon
-from pypylon import genicam
 import numpy as np
 from libtiff import TIFF
+import helper
+
 import logging
 logger = logging.getLogger(__name__)
+
 
 class BaslerCamera:
 
@@ -66,7 +68,7 @@ class BaslerCamera:
         cam.OffsetX.SetValue(offset_x)
         cam.OffsetY.SetValue(offset_y)
 
-    def grab_one(self):
+    def grab_one(self, convert = True):
     
         """grab one frame and return data as a numpy array"""
 
@@ -74,11 +76,17 @@ class BaslerCamera:
         
         cam = self.get_camera()
         r = cam.GrabOne(self.TIME_OUT)
-        y = r.Array
+        if convert:
+            converter = helper.get_image_converter()
+            target_image = converter.Convert(r)
+            y = target_image.GetArray()
+        else:
+            y = r.Array
+            
         r.Release()
         return y
 
-    def grab_n(self, n, fps = None):
+    def grab_n(self, n, frame_rate=None, convert=True):
     
         """grab n frames and return a numpy array of shape n x height x width"""
 
@@ -89,11 +97,13 @@ class BaslerCamera:
 
         cam = self.get_camera()
 
-        if fps:
-            cam.AcquisitionFrameRateEnable.SetValue(True)
-            cam.AcquisitionFrameRate.SetValue(fps)
+        if frame_rate:
+            helper.set_framerate(cam, frame_rate)
         else:
-            cam.AcquisitionFrameRateEnable.SetValue(False)
+            helper.set_framerate(cam, None)
+
+        if convert:
+            converter = helper.get_image_converter()
 
         width = cam.Width.GetValue()
         height = cam.Height.GetValue()
@@ -103,19 +113,23 @@ class BaslerCamera:
         cam.StartGrabbingMax(n)
         while cam.IsGrabbing():
 
-            grabResult = cam.RetrieveResult(self.TIME_OUT, pylon.TimeoutHandling_ThrowException)
+            grab_result = cam.RetrieveResult(self.TIME_OUT, pylon.TimeoutHandling_ThrowException)
 
             # Image grabbed successfully?
-            if grabResult.GrabSucceeded():
-                r[i, :, :]= grabResult.Array
+            if grab_result.GrabSucceeded():
+                if convert:
+                    target_image = converter.Convert(grab_result)
+                    r[i, :, :] = target_image.GetArray()
+                else:
+                    r[i, :, :] = grab_result.Array
                 i += 1
             else:
-                print("Error: ", grabResult.ErrorCode, grabResult.ErrorDescription)
-            grabResult.Release()
+                print("Error: ", grab_result.ErrorCode, grab_result.ErrorDescription)
+            grab_result.Release()
 
         return r
 
-    def grab_n_save(self, n, fps, save_pattern, n_start = 1):
+    def grab_n_save(self, n, frame_rate, save_pattern, n_start=1, convert=True):
     
         """grab n frames and save them as tiff files according to save_pattern.
         
@@ -135,28 +149,34 @@ class BaslerCamera:
         height = cam.Height.GetValue()
         i = 0
 
-        if fps:
-            cam.AcquisitionFrameRateEnable.SetValue(True)
-            cam.AcquisitionFrameRate.SetValue(fps)
+        if frame_rate:
+            helper.set_framerate(cam, frame_rate)
         else:
-            cam.AcquisitionFrameRateEnable.SetValue(False)
+            helper.set_framerate(cam, None)
+
+        if convert:
+            converter = helper.get_image_converter()
 
         cam.StartGrabbingMax(n)
         while cam.IsGrabbing():
 
-            grabResult = cam.RetrieveResult(self.TIME_OUT, pylon.TimeoutHandling_ThrowException)
+            grab_result = cam.RetrieveResult(self.TIME_OUT, pylon.TimeoutHandling_ThrowException)
 
             # Image grabbed successfully?
-            if grabResult.GrabSucceeded():
-                r = grabResult.Array
+            if grab_result.GrabSucceeded():
+                if convert:
+                    target_image = converter.Convert(grab_result)
+                    r = target_image.GetArray()
+                else:
+                    r = grab_result.Array
                 filename = save_pattern % (n_start + i)
                 tif = TIFF.open(filename, 'w')
                 tif.write_image(r)
                 i += 1
+                grab_result.Release()
             else:
-                print("Error: ", grabResult.ErrorCode, grabResult.ErrorDescription)
-
-            grabResult.Release()
+                print("Error: ", grab_result.ErrorCode, grab_result.ErrorDescription)
+                logger.error("Error: " + str(grab_result.ErrorCode) + str(grab_result.ErrorDescription))
 
 
 def get_camera_list():
