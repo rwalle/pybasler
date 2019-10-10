@@ -2,6 +2,8 @@ from pypylon import pylon
 from pypylon import genicam
 import numpy as np
 from libtiff import TIFF
+import logging
+logger = logging.getLogger(__name__)
 
 class BaslerCamera:
 
@@ -67,6 +69,8 @@ class BaslerCamera:
     def grab_one(self):
     
         """grab one frame and return data as a numpy array"""
+
+        logger.info("grab one frame")
         
         cam = self.get_camera()
         r = cam.GrabOne(self.TIME_OUT)
@@ -77,7 +81,12 @@ class BaslerCamera:
     def grab_n(self, n, fps = None):
     
         """grab n frames and return a numpy array of shape n x height x width"""
-    
+
+        info_text = "grabbing %d frames at %.1f fps" % (n, frame_rate) if frame_rate is not None \
+            else "grabbing %d frames" % n
+
+        logger.info(info_text)
+
         cam = self.get_camera()
 
         if fps:
@@ -114,6 +123,11 @@ class BaslerCamera:
         
         grab_n_save(200, 25, '/home/zheli/images/0722-%d.tiff', 1):
         """
+
+        info_text = "grabbing and saving %d frames at %.1f fps" % (n, frame_rate) if frame_rate \
+            else "grabbing and saving %d frames" % n
+
+        logger.info(info_text)
 
         cam = self.get_camera()
 
