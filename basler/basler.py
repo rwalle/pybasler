@@ -27,9 +27,9 @@ class BaslerCamera:
     
     def __init__(self, ip = None, serial_number = None):
         info = pylon.CDeviceInfo()
-        if ip != None:
+        if ip is not None:
             info.SetIpAddress(ip)
-        if serial_number != None:
+        if serial_number is not None:
             info.SetSerialNumber(serial_number)
         self.cam = pylon.InstantCamera(pylon.TlFactory.GetInstance().CreateFirstDevice(info))
 
@@ -45,12 +45,12 @@ class BaslerCamera:
     def get_camera_info(self):
         cam = self.get_camera()
         info = {}
-        for property in self.PROPERTIES:
+        for cam_property in self.PROPERTIES:
             
-            is_availble = getattr(cam.GetDeviceInfo(), 'Is' + property + 'Available')
-            if is_availble():
-                attr = getattr(cam.GetDeviceInfo(), 'Get' + property)
-                info[property] = attr()
+            is_available = getattr(cam.GetDeviceInfo(), 'Is' + cam_property + 'Available')
+            if is_available():
+                attr = getattr(cam.GetDeviceInfo(), 'Get' + cam_property)
+                info[cam_property] = attr()
                 
         return info
     
@@ -189,7 +189,8 @@ def get_camera_list():
     for device in devices:
         friendly_names.append(device.GetFriendlyName())
     return friendly_names
-    
+
+
 def get_camera_list_full():
 
     """return a list of available cameras in the "full name" format containing addresses"""
