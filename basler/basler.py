@@ -1,7 +1,7 @@
 from pypylon import pylon
 import numpy as np
 from libtiff import TIFF
-import helper
+from . import helper
 
 import logging
 logger = logging.getLogger(__name__)

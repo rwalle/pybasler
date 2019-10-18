@@ -23,6 +23,7 @@ def set_framerate(cam, frame_rate=None):
         except pypylon._genicam.LogicalErrorException:
             try:
                 cam.AcquisitionFrameRate.SetValue(frame_rate)
+                real_fps = cam.ResultingFrameRate.GetValue()
                 if abs(frame_rate - real_fps) > FRAMERATE_EPISLON:
                     raise RuntimeError("Cannot set framerate: resulting frame rate is too far from target framerate.")
                     cam.AcquisitionFrameRateEnable.SetValue(False) # rollback
