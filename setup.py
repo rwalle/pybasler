@@ -8,6 +8,6 @@ setuptools.setup(name='py_basler_camera',
     author_email='lizhe05@gmail.com',
     license='MIT',
     packages=setuptools.find_packages(),
-    install_requires=['pypylon', 'numpy', 'libtiff'],
+    install_requires=['pypylon', 'numpy'],
     test_suite='tests',
     )

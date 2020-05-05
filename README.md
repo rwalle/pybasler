@@ -26,7 +26,6 @@ A Python module for connecting Basler cameras. It contains the following classes
 
 * numpy
 * [pypylon](https://github.com/basler/pypylon)
-* [pylibtiff](https://github.com/pearu/pylibtiff)
 
 ## Single Camera API reference
 
