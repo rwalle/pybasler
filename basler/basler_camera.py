@@ -96,6 +96,12 @@ class BaslerCamera():
         dynamic_range = (cam.PixelDynamicRangeMin.GetValue(), cam.PixelDynamicRangeMax.GetValue())
         return dynamic_range
 
+    def set_exposure_time(self, exposure_time: float):
+        raise NotImplementedError
+
+    def set_framerate(self, framerate: float=None):
+        raise NotImplementedError
+
     # ----------------------- helper -----------------------------------
 
     def post_processing(self, grab_result):
