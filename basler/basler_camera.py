@@ -24,7 +24,7 @@ class BaslerCamera():
         'ModelName',
         'SerialNumber',]
 
-    def __init__(self, ip=None, serial_number=None):
+    def __init__(self, ip: str=None, serial_number: str=None):
         """The constructor looks for the camera by IP address or serial number (or both). If neither is specified,
         the first device is created.
         """
@@ -57,7 +57,7 @@ class BaslerCamera():
 
     # ---------------------- camera settings -------------------------
 
-    def set_aoi(self, aoi):
+    def set_aoi(self, aoi: tuple):
         
         offset_x, offset_y, width, height = aoi
         cam = self.get_device()
@@ -67,10 +67,10 @@ class BaslerCamera():
         cam.OffsetX.SetValue(offset_x)
         cam.OffsetY.SetValue(offset_y)
 
-    def set_pixel_format(self, pixel_format):
+    def set_pixel_format(self, pixel_format_string: str):
 
         cam = self.get_device()
-        cam.PixelFormat.SetValue(pixel_format)
+        cam.PixelFormat.SetValue(pixel_format_string)
 
     def set_converter(self, convert=True):
 
@@ -119,7 +119,7 @@ class BaslerCamera():
         acquired_image.Release()
         return result
 
-    def grab_many(self, n):
+    def grab_many(self, n: int):
     
         """grab n frames and return a numpy array of shape n x height x width"""
 
@@ -146,7 +146,7 @@ class BaslerCamera():
 
         return r
 
-    def grab_n_save(self, n, save_pattern, n_start=1):
+    def grab_n_save(self, n: int, save_pattern: str, n_start:int=1):
     
         """grab n frames and save them as tiff files according to save_pattern.
         
@@ -239,10 +239,10 @@ class BaslerCameraArray():
         
         return target_image
 
-    def set_pixel_format(self, id, pixel_format):
+    def set_pixel_format(self, id: int, pixel_format_string: str):
 
         camera = self.get_camera(id)
-        camera.PixelFormat.SetValue(pixel_format)
+        camera.PixelFormat.SetValue(pixel_format_string)
 
     def connect(self):
         tlf = pypylon.pylon.TlFactory.GetInstance()
@@ -258,7 +258,7 @@ class BaslerCameraArray():
         camera_array.Close()
         self.camera_array = None
 
-    def set_framerate(self, id, framerate = None):
+    def set_framerate(self, id: int, framerate: float=None):
 
         camera = self.get_camera(id)
         if framerate:
@@ -274,7 +274,7 @@ class BaslerCameraArray():
         else:
             camera.AcquisitionFrameRateEnable.SetValue(False)
 
-    def set_exposure_time(self, id, exposure_time):
+    def set_exposure_time(self, id: int, exposure_time: float):
 
         camera = self.get_camera(id)
         try:
@@ -285,7 +285,7 @@ class BaslerCameraArray():
             except pypylon._genicam.LogicalErrorException:
                 raise RuntimeError(f'Unable to set exposure time for camera {id}.')
 
-    def set_aoi(self, id, aoi):
+    def set_aoi(self, id: int, aoi: tuple):
         offset_x, offset_y, width, height = aoi
 
         camera = self.get_camera(id)
@@ -311,7 +311,7 @@ class BaslerCameraArray():
 
         return result
 
-    def grab_many(self, n):
+    def grab_many(self, n: int):
 
         camera_array = self.get_camera_array()
 
@@ -346,7 +346,7 @@ class BaslerCameraArray():
 
         return result
 
-    def grab_n_save(self, n, save_pattern, n_start = None):
+    def grab_n_save(self, n: int, save_pattern: list, n_start: list=None):
 
         camera_array = self.get_camera_array()
 
@@ -401,12 +401,12 @@ class BaslerPIA160035GM(BaslerCamera):
         cam.GevSCPSPacketSize.SetValue(self._PACKET_SIZE)
         cam.PixelFormat.SetValue(self._PIXEL_FORMAT)
 
-    def set_exposure_time(self, exposure_time):
+    def set_exposure_time(self, exposure_time: float):
 
         cam = self.get_device()
         cam.ExposureTimeAbs.SetValue(exposure_time * 1000)
 
-    def set_framerate(self, framerate=None):
+    def set_framerate(self, framerate: float=None):
 
         cam = self.get_device()
         if framerate:
@@ -431,12 +431,12 @@ class BaslerAcA1920155um(BaslerCamera):
         cam = self.get_device()
         cam.PixelFormat.SetValue(self._PIXEL_FORMAT)
 
-    def set_exposure_time(self, exposure_time):
+    def set_exposure_time(self, exposure_time: float):
 
         cam = self.get_device()
         cam.ExposureTime.SetValue(exposure_time * 1000)
 
-    def set_framerate(self, framerate=None):
+    def set_framerate(self, framerate: float=None):
 
         cam = self.get_device()
         if framerate:
