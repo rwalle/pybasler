@@ -37,7 +37,7 @@ class BaslerCamera():
             self._device_info.SetIpAddress(ip)
         if serial_number is not None:
             self._device_info.SetSerialNumber(serial_number)
-        self.converter = None
+        self._converter = None
 
     def __get_device(self):
         if self._device is None:
@@ -56,7 +56,7 @@ class BaslerCamera():
         self._device = None
 
     def __del__(self):
-        self.converter = None
+        self._converter = None
 
     # ----------------------- getter -----------------------------------
             
@@ -184,11 +184,11 @@ class BaslerCamera():
         """
 
         if convert:
-            self.converter = pypylon.pylon.ImageFormatConverter()
-            self.converter.OutputPixelFormat = pypylon.pylon.PixelType_Mono16
-            self.converter.OutputBitAlignment = pypylon.pylon.OutputBitAlignment_MsbAligned
+            self._converter = pypylon.pylon.ImageFormatConverter()
+            self._converter.OutputPixelFormat = pypylon.pylon.PixelType_Mono16
+            self._converter.OutputBitAlignment = pypylon.pylon.OutputBitAlignment_MsbAligned
         else:
-            self.converter = None
+            self._converter = None
 
     def set_exposure_time(self, exposure_time: float):
 
@@ -257,8 +257,8 @@ class BaslerCamera():
 
     def post_processing(self, grab_result):
 
-        if self.converter is not None:
-            target_image = self.converter.Convert(grab_result)
+        if self._converter is not None:
+            target_image = self._converter.Convert(grab_result)
         else:
             target_image = pypylon.pylon.PylonImage()
             target_image.AttachGrabResultBuffer(grab_result)

@@ -21,9 +21,9 @@ class BaslerCameraArray:
         devices_info = [{'serial_number': '21939024'}, {'ip': '192.168.0.31'}]
         """
 
-        self.camera_array = None
-        
-        self.device_info = []
+        self._camera_array = None
+        self._device_info_objects = []
+        self._converter = None
 
         for device_info in devices_info:
             info = pypylon.pylon.CDeviceInfo()
@@ -31,15 +31,13 @@ class BaslerCameraArray:
                 info.SetIpAddress(device_info['ip'])
             if 'serial_number' in device_info:
                 info.SetSerialNumber(device_info['serial_number'])
-            self.device_info.append(info)
-
-        self.converter = None
+            self._device_info_objects.append(info)
 
     def __get_camera_array(self):
-        if self.camera_array == None:
+        if self._camera_array is None:
             raise NameError('Not initialized!')
         else:
-            return self.camera_array
+            return self._camera_array
 
     def __get_camera_by_id(self, cam_id: int):
         """get individual camera instance
@@ -53,17 +51,17 @@ class BaslerCameraArray:
 
     def connect(self):
         tlf = pypylon.pylon.TlFactory.GetInstance()
-        num_devices = len(self.device_info)
-        self.camera_array = pypylon.pylon.InstantCameraArray(num_devices)
-        for idx, device_info in enumerate(self.device_info):
-            self.camera_array[idx].Attach(tlf.CreateDevice(device_info))
-        self.camera_array.Open()
+        num_devices = len(self._device_info_objects)
+        self._camera_array = pypylon.pylon.InstantCameraArray(num_devices)
+        for idx, device_info in enumerate(self._device_info_objects):
+            self._camera_array[idx].Attach(tlf.CreateDevice(device_info))
+        self._camera_array.Open()
 
     def disconnect(self):
         
         camera_array = self.__get_camera_array()
         camera_array.Close()
-        self.camera_array = None
+        self._camera_array = None
 
     # ----------------------- getter -----------------------------------
 
@@ -102,11 +100,11 @@ class BaslerCameraArray:
         """
 
         if convert:
-            self.converter = pypylon.pylon.ImageFormatConverter()
-            self.converter.OutputPixelFormat = pypylon.pylon.PixelType_Mono16
-            self.converter.OutputBitAlignment = pypylon.pylon.OutputBitAlignment_MsbAligned
+            self._converter = pypylon.pylon.ImageFormatConverter()
+            self._converter.OutputPixelFormat = pypylon.pylon.PixelType_Mono16
+            self._converter.OutputBitAlignment = pypylon.pylon.OutputBitAlignment_MsbAligned
         else:
-            self.converter = None
+            self._converter = None
 
     def set_pixel_format(self, cam_id: int, pixel_format_string: str):
 
@@ -166,8 +164,8 @@ class BaslerCameraArray:
 
     def post_processing(self, grab_result):
 
-        if self.converter is not None:
-            target_image = self.converter.Convert(grab_result)
+        if self._converter is not None:
+            target_image = self._converter.Convert(grab_result)
         else:
             target_image = pypylon.pylon.PylonImage()
             target_image.AttachGrabResultBuffer(grab_result)
