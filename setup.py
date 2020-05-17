@@ -1,7 +1,7 @@
 import setuptools
 
-setuptools.setup(name='py_basler_camera',
-    version='0.1',
+setuptools.setup(name='PyBasler',
+    version='1.0',
     description='Python module for connecting basler cameras. Uses pypylon',
     url='http://github.com/rwalle/pybasler',
     author='Zhe Li',
