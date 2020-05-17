@@ -1,16 +1,4 @@
-
-
-class BaslerCameraFactory:
-
-    @staticmethod
-    def get_camera_instance_from_model_name(model_name: str, **args) -> BaslerCamera:
-        if model_name == 'acA1920-155um':
-            return BaslerAcA1920155um(**args)
-        elif model_name == 'piA1600-35gm':
-            return BaslerPIA160035GM(**args)
-        else:
-            raise KeyError("Unknown model name. Edit basler_camera.py to add new cameras.")
-
+import pypylon.pylon
 
 class BaslerCameraManager:
 
