@@ -241,14 +241,15 @@ class BaslerCameraArray:
 
         :param n: the number of frames to grab for each camera
         :param save_patterns: a list of strings where each contains one single '%d' as the number.
-        :param n_start: a list of integers indicating the start number of the filename
+        :param n_start: a list of integers indicating the start number of the filename. Default is [1, 1, ...], i.e.
+        1 for each camera.
         
         Example:
         
         grab_n_save(200, ['/home/zhe/data/cam0-%d.tiff', '/home/zhe/data/cam1-%d.tiff'], [3, 5])
 
         Images are saved as `cam0-3.tiff`, `cam0-4.tiff`, ... for camera 0,
-        and `cam1-5.tiff`, `cam1-6.tiff`, ... for camera 1 
+        and `cam1-5.tiff`, `cam1-6.tiff`, ... for camera 1
         """
 
         camera_array = self._get_camera_array()
