@@ -66,3 +66,20 @@ class BaslerAcA1920155um(BaslerCamera):
 
         cam = self._get_device()
         cam.Gain.SetValue(gain)
+
+
+if __name__ == '__main__':
+
+    import matplotlib.pyplot as plt
+
+    SERIAL_NUMBER = '21939024'
+    camera = BaslerPIA160035GM(serial_number=SERIAL_NUMBER)
+    camera.connect()
+    camera.set_exposure_time(10)
+
+    frame = camera.grab_one()
+
+    plt.imshow(frame, cmap='gray')
+    plt.show()
+
+    camera.disconnect()
