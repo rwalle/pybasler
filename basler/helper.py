@@ -3,6 +3,10 @@ import pypylon.pylon
 
 class BaslerCameraManager:
 
+    """
+    A helper class
+    """
+
     @staticmethod
     def get_camera_list_names() -> list:
 
@@ -16,6 +20,10 @@ class BaslerCameraManager:
 
     @staticmethod
     def get_camera_list_dict() -> list:
+
+        """return a list of dictionaries of available cameras, where the keys of each dictionary are
+        ``name``, ``serial_number`` and ``model_name``
+        """
 
         devices = pypylon.pylon.TlFactory.GetInstance().EnumerateDevices()
         dct = []

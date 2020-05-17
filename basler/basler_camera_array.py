@@ -8,6 +8,7 @@ class BaslerCameraArray:
     """
     A class for basler camera array. Useful for capturing from multiple cameras simultaneously.
     If the task requires high synchronization, using hardware synchronization is preferred.
+
     """
 
     _TIME_OUT = 2000
@@ -17,10 +18,10 @@ class BaslerCameraArray:
         """The constructor of the array.
         
         :param devices_info: a list of camera device info stored as dictionaries that has IP address
-        or serial number.
+            or serial number.
 
         Examples:
-        devices_info = [{'serial_number': '21939024'}, {'ip': '192.168.0.31'}]
+        ``devices_info = [{'serial_number': '21939024'}, {'ip': '192.168.0.31'}]``
         """
 
         self._camera_array = None
@@ -43,6 +44,7 @@ class BaslerCameraArray:
 
     def _get_camera_by_id(self, cam_id: int):
         """get individual camera instance
+
         :param cam_id: camera ID, determined by the order of appearance in devices_info at initialization
         """
         camera_array = self._get_camera_array()
@@ -69,8 +71,9 @@ class BaslerCameraArray:
 
     def get_aoi(self, cam_id:int):
         """return the area of interest (AOI) of a certain camera
+
         :param cam_id: camera ID
-        :return: a tuple of (offset_x, offset_y, width, height)
+        :return: a tuple of ``(offset_x, offset_y, width, height)``
         """
         cam = self._get_camera_by_id(cam_id)
         aoi = BaslerCamera.get_aoi_helper(cam)
@@ -78,6 +81,7 @@ class BaslerCameraArray:
 
     def get_exposure_time(self, cam_id:int):
         """return the exposure time of a certain camera in millisecond (ms).
+
         :param cam_id: camera ID
         """
         cam = self._get_camera_by_id(cam_id)
@@ -86,6 +90,7 @@ class BaslerCameraArray:
 
     def get_resulting_framerate(self, cam_id:int):
         """return the resulting framerate of a certain camera.
+
         :param cam_id: camera ID
         """
         cam = self._get_camera_by_id(cam_id)
@@ -98,6 +103,7 @@ class BaslerCameraArray:
 
         """when saving TIFF files, always use a 16-bit format with the most significant bit (MSB)
         aligned.
+
         :param convert: a boolean
         """
 
@@ -113,9 +119,8 @@ class BaslerCameraArray:
         """set acquisition pixel format for the camera.
 
         :param cam_id: camera id
-        :param pixel_format_string: a pixel format string, like 'Mono8', 'Mono12', 'Mono12Packed'.
-        Allowed values vary from camera to camera.
-        Refer to camera documentation in the Pylon software for details.
+        :param pixel_format_string: a pixel format string, like ``Mono8``, ``Mono12``, ``Mono12Packed``.
+            Allowed values vary from camera to camera. Refer to camera documentation in the Pylon software for details.
         """
 
         cam = self._get_camera_by_id(cam_id)
@@ -130,7 +135,7 @@ class BaslerCameraArray:
         :type cam_id: int
         :type framerate: float
 
-        See the `set_acquisition_framerate` of the `BaslerCamera class` for details.
+        See the :func:`~basler.BaslerCamera.set_acquisition_framerate` of the BaslerCamera class for details.
         """
 
         cam = self._get_camera_by_id(cam_id)
@@ -145,7 +150,7 @@ class BaslerCameraArray:
         :type cam_id: int
         :type exposure_time: float
 
-        See the `set_exposure_time` of `BaslerCamera` class for details. 
+        See the :func:`~basler.BaslerCamera.set_exposure_time` of BaslerCamera class for details. 
         """
 
         cam = self._get_camera_by_id(cam_id)
@@ -154,8 +159,9 @@ class BaslerCameraArray:
     def set_aoi(self, cam_id: int, aoi: tuple):
 
         """set the area of interest (AOI) of the camera.
+        
         :param cam_id: camera ID
-        :param aoi: a tuple: (offset_x, offset_y, width, height)
+        :param aoi: a tuple: ``(offset_x, offset_y, width, height)``
         """
 
         cam = self._get_camera_by_id(cam_id)
@@ -196,8 +202,8 @@ class BaslerCameraArray:
 
     def grab_many(self, n: int):
 
-        """grab n frames from each camera, and return a list of numpy arrays of shape `(n, height_i, width_i)`
-        where `height_i` and `width_i` is the height and width of the i-th camera
+        """grab n frames from each camera, and return a list of numpy arrays of shape ``(n, height_i, width_i)``
+        where ``height_i`` and ``width_i`` are the height and width of the i-th camera
 
         :param n: the number of frames
         """
@@ -241,15 +247,15 @@ class BaslerCameraArray:
 
         :param n: the number of frames to grab for each camera
         :param save_patterns: a list of strings where each contains one single '%d' as the number.
-        :param n_start: a list of integers indicating the start number of the filename. Default is [1, 1, ...], i.e.
-        1 for each camera.
+        :param n_start: a list of integers indicating the start number of the filename.
+            Default is ``[1, 1, ...]``, i.e. 1 for each camera.
         
         Example:
         
-        grab_n_save(200, ['/home/zhe/data/cam0-%d.tiff', '/home/zhe/data/cam1-%d.tiff'], [3, 5])
+        ``grab_n_save(200, ['/home/zhe/data/cam0-%d.tiff', '/home/zhe/data/cam1-%d.tiff'], [3, 5])``
 
-        Images are saved as `cam0-3.tiff`, `cam0-4.tiff`, ... for camera 0,
-        and `cam1-5.tiff`, `cam1-6.tiff`, ... for camera 1
+        Images are saved as ``cam0-3.tiff``, ``cam0-4.tiff``, ... for camera 0,
+        and ``cam1-5.tiff``, ``cam1-6.tiff``, ... for camera 1
         """
 
         camera_array = self._get_camera_array()

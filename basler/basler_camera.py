@@ -64,8 +64,8 @@ class BaslerCamera:
     def get_camera_info(self):
 
         """return a dictionary of a few properties of the camera, including
-        `Address`, `DeviceClass`, `DeviceID`, `FriendlyName`, `FullName`, `IpAddress`, `ModelName`,
-        `SerialNumber`
+        ``Address``, ``DeviceClass``, ``DeviceID``, ``FriendlyName``, ``FullName``, ``IpAddress``, ``ModelName``,
+        ``SerialNumber``
         """
         cam = self._get_device()
         info = {}
@@ -80,7 +80,8 @@ class BaslerCamera:
         
     def get_dynamic_range(self):
         """return the dynamic range of the image (affected by image format)
-        :return: a tuple: (min_value, max_value)
+        
+        :return: a tuple: ``(min_value, max_value)``
         """
         cam = self._get_device()
         dynamic_range = (cam.PixelDynamicRangeMin.GetValue(), cam.PixelDynamicRangeMax.GetValue())
@@ -89,7 +90,8 @@ class BaslerCamera:
     def get_aoi(self):
 
         """return the area of interest (AOI) of the camera
-        :return: a tuple: (offset_x, offset_y, width, height)
+
+        :return: a tuple: ``(offset_x, offset_y, width, height)``
         """
 
         cam = self._get_device()
@@ -149,7 +151,8 @@ class BaslerCamera:
 
     def set_aoi(self, aoi:tuple):
         """set the area of interest (AOI) of the camera.
-        :param aoi: a tuple: (offset_x, offset_y, width, height)
+
+        :param aoi: a tuple: ``(offset_x, offset_y, width, height)``
         """
         cam = self._get_device()
         BaslerCamera.set_aoi_helper(cam, aoi)
@@ -168,9 +171,8 @@ class BaslerCamera:
 
         """set acquisition pixel format for the camera.
 
-        :param pixel_format_string: a pixel format string, like 'Mono8', 'Mono12', 'Mono12Packed'.
-        Allowed values vary from camera to camera.
-        Refer to camera documentation in the Pylon software for details.
+        :param pixel_format_string: a pixel format string, like ``Mono8``, ``Mono12``, ``Mono12Packed``.
+            Allowed values vary from camera to camera. Refer to camera documentation in the Pylon software for details.
         """
 
         cam = self._get_device()
@@ -180,6 +182,7 @@ class BaslerCamera:
 
         """when saving TIFF files, always use a 16-bit format with the most significant bit (MSB)
         aligned.
+
         :param convert: a boolean
         """
 
@@ -202,9 +205,9 @@ class BaslerCamera:
 
     @staticmethod
     def set_exposure_time_helper(cam, exposure_time: float):
-        """A helper method for `set_exposure_time`
+        """A helper method for set_exposure_time
 
-        This method will attempt to change `ExposureTime` property and then `ExposureTimeAbs`
+        This method will attempt to change ``ExposureTime`` property and then ``ExposureTimeAbs``
         (as the property name varies from camera to camera). If no property is found,
         this method throws an error.
         """
@@ -223,7 +226,7 @@ class BaslerCamera:
         :param framerate: acquisition framerate
 
         The resulting (i.e. actural) framerate depends on a number of factors
-        (see the official [Basler Documentation] (https://docs.baslerweb.com/resulting-frame-rate.html))
+        (see the official `Basler Documentation <https://docs.baslerweb.com/resulting-frame-rate.html>`_)
         and may not equal the "acquisition frame rate" here.
         """
         cam = self._get_device()
@@ -232,12 +235,12 @@ class BaslerCamera:
     @staticmethod
     def set_acquisition_framerate_helper(cam, framerate: float=None):
 
-        """A helper method for `set_acquisition_framerate`
+        """A helper method for set_acquisition_framerate
 
-        This method will attempt to change `AcquisitionFrameRate` property and then `AcquisitionFrameRateAbs`
+        This method will attempt to change ``AcquisitionFrameRate`` property and then ``AcquisitionFrameRateAbs``
         (as the property name varies from camera to camera). If no property is found,
         this method throws an error.
-        If framerate is not specified or `None`, framerate control will be disabled.
+        If framerate is not specified or ``None``, framerate control will be disabled.
         """
        
         if framerate:
@@ -280,6 +283,7 @@ class BaslerCamera:
     def grab_many(self, n: int):
     
         """grab n frames and return a numpy array of shape (n, height, width)
+
         :param n: the number of frames
         """
 
@@ -312,18 +316,17 @@ class BaslerCamera:
 
         :param n: the number of frames to grab
         :param save_pattern: a string that contains one single '%d' as the number.
-
-        Windows - r'D:\20200212Z\002\002-%d.tiff' (Don't miss the leading 'r' which stands for 'raw' string; alternatively,
-        use double backslash, e.g. 'D:\\20200212Z\\002\\002-%d.tiff')
-        Linux - '/home/zheli/002/002-%d.tiff'
+            For Windows: ``r'D:\20200212Z\002\002-%d.tiff'`` (Don't miss the leading 'r' which stands for 'raw' string;
+            alternatively, use double backslash, e.g. ``'D:\\20200212Z\\002\\002-%d.tiff'``)
+            For Linux: ``'/home/zheli/002/002-%d.tiff'``
         
         :param n_start: the starting number or the sequence; default is 1
         
         Example:
         
-        grab_n_save(200, '/home/zheli/images/0722-%d.tiff')
+        ``grab_n_save(200, '/home/zheli/images/0722-%d.tiff')``
 
-        Images are saved as 0722-1.tiff, 0722-2.tif, ...
+        Images are saved as ``0722-1.tiff``, ``0722-2.tif``, ...
         """
 
         cam = self._get_device()
