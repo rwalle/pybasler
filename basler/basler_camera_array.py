@@ -1,5 +1,7 @@
 import numpy as np
 from .basler_camera import BaslerCamera
+import pypylon
+
 
 class BaslerCameraArray:
 
@@ -94,7 +96,7 @@ class BaslerCameraArray:
 
     def set_converter(self, convert=True):
 
-         """when saving TIFF files, always use a 16-bit format with the most significant bit (MSB)
+        """when saving TIFF files, always use a 16-bit format with the most significant bit (MSB)
         aligned.
         :param convert: a boolean
         """
@@ -119,7 +121,7 @@ class BaslerCameraArray:
         cam = self.__get_camera_by_id(cam_id)
         cam.PixelFormat.SetValue(pixel_format_string)
 
-    def set_acquisition_framerate(self, cam_id: int, framerate: float=None):
+    def set_acquisition_framerate(self, cam_id: int, framerate: float = None):
 
         """set the acquisition frame rates for a certain camera.
 
@@ -233,7 +235,7 @@ class BaslerCameraArray:
 
         return result
 
-    def grab_n_save(self, n: int, save_pattern: list, n_start: list=None):
+    def grab_n_save(self, n: int, save_patterns: list, n_start: list = None):
     
         r"""grab n frames and save them sequentially as TIFF files
 
@@ -271,7 +273,7 @@ class BaslerCameraArray:
             
             image = pypylon.pylon.PylonImage(image)
 
-            filename = save_pattern[camera_no] % (n_start[camera_no] + frames_captured[camera_no])
+            filename = save_patterns[camera_no] % (n_start[camera_no] + frames_captured[camera_no])
 
             image.Save(pypylon.pylon.ImageFileFormat_Tiff, filename)
             image.Release()

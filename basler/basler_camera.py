@@ -2,11 +2,12 @@ import pypylon
 import pypylon.pylon
 import numpy as np
 
+
 class DeviceError(Exception):
     pass
 
 
-class BaslerCamera():
+class BaslerCamera:
 
     """
     A generic class for connecting Basler cameras and capturing images.
@@ -22,9 +23,9 @@ class BaslerCamera():
         'FullName',
         'IpAddress',
         'ModelName',
-        'SerialNumber',]
+        'SerialNumber', ]
 
-    def __init__(self, ip: str=None, serial_number: str=None):
+    def __init__(self, ip: str = None, serial_number: str = None):
         """The constructor looks for the camera by IP address or serial number (or both). If neither is specified,
         the first device is created.
         
@@ -103,7 +104,6 @@ class BaslerCamera():
             cam.OffsetY.GetValue())
         return aoi
 
-
     def get_exposure_time(self):
         """get the exposure time in millisecond (ms)"""
         cam = self.__get_device()
@@ -114,10 +114,10 @@ class BaslerCamera():
     def get_exposure_time_helper(cam):
         
         try:
-            exposure_time = camera.ExposureTime.GetValue() / 1000
+            exposure_time = cam.ExposureTime.GetValue() / 1000
         except pypylon._genicam.LogicalErrorException:
             try:
-                exposure_time = camera.ExposureTimeAbs.GetValue() / 1000
+                exposure_time = cam.ExposureTimeAbs.GetValue() / 1000
             except pypylon._genicam.LogicalErrorException:
                 raise RuntimeError(f'Unable to set exposure time.')
         return exposure_time
@@ -223,7 +223,7 @@ class BaslerCamera():
         :param framerate: acquisition framerate
 
         The resulting (i.e. actural) framerate depends on a number of factors
-        \(see the official [Basler Documentation] (https://docs.baslerweb.com/resulting-frame-rate.html)\)
+        (see the official [Basler Documentation] (https://docs.baslerweb.com/resulting-frame-rate.html))
         and may not equal the "acquisition frame rate" here.
         """
         cam = self.__get_device()
@@ -306,7 +306,7 @@ class BaslerCamera():
 
         return r
 
-    def grab_n_save(self, n: int, save_pattern: str, n_start:int = 1):
+    def grab_n_save(self, n: int, save_pattern: str, n_start: int = 1):
     
         r"""grab n frames and save them sequentially as TIFF files according to save_pattern.
 
@@ -328,8 +328,6 @@ class BaslerCamera():
 
         cam = self.__get_device()
 
-        width = cam.Width.GetValue()
-        height = cam.Height.GetValue()
         i = 0
 
         cam.StartGrabbingMax(n)

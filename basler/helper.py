@@ -1,5 +1,6 @@
 import pypylon.pylon
 
+
 class BaslerCameraManager:
 
     @staticmethod
