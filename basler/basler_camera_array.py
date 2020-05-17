@@ -35,17 +35,17 @@ class BaslerCameraArray:
                 info.SetSerialNumber(device_info['serial_number'])
             self._device_info_objects.append(info)
 
-    def __get_camera_array(self):
+    def _get_camera_array(self):
         if self._camera_array is None:
             raise NameError('Not initialized!')
         else:
             return self._camera_array
 
-    def __get_camera_by_id(self, cam_id: int):
+    def _get_camera_by_id(self, cam_id: int):
         """get individual camera instance
         :param cam_id: camera ID, determined by the order of appearance in devices_info at initialization
         """
-        camera_array = self.__get_camera_array()
+        camera_array = self._get_camera_array()
         if (cam_id < 0) or (cam_id > camera_array.GetSize() - 1):
             raise ValueError('Wrong Camera ID')
         camera = camera_array[cam_id]
@@ -61,7 +61,7 @@ class BaslerCameraArray:
 
     def disconnect(self):
         
-        camera_array = self.__get_camera_array()
+        camera_array = self._get_camera_array()
         camera_array.Close()
         self._camera_array = None
 
@@ -72,7 +72,7 @@ class BaslerCameraArray:
         :param cam_id: camera ID
         :return: a tuple of (offset_x, offset_y, width, height)
         """
-        cam = self.__get_camera_by_id(cam_id)
+        cam = self._get_camera_by_id(cam_id)
         aoi = BaslerCamera.get_aoi_helper(cam)
         return aoi
 
@@ -80,7 +80,7 @@ class BaslerCameraArray:
         """return the exposure time of a certain camera in millisecond (ms).
         :param cam_id: camera ID
         """
-        cam = self.__get_camera_by_id(cam_id)
+        cam = self._get_camera_by_id(cam_id)
         exposure_time = BaslerCamera.get_exposure_time(cam)
         return exposure_time
 
@@ -88,7 +88,7 @@ class BaslerCameraArray:
         """return the resulting framerate of a certain camera.
         :param cam_id: camera ID
         """
-        cam = self.__get_camera_by_id(cam_id)
+        cam = self._get_camera_by_id(cam_id)
         framerate = BaslerCamera.get_resulting_framerate(cam)
         return framerate
 
@@ -118,7 +118,7 @@ class BaslerCameraArray:
         Refer to camera documentation in the Pylon software for details.
         """
 
-        cam = self.__get_camera_by_id(cam_id)
+        cam = self._get_camera_by_id(cam_id)
         cam.PixelFormat.SetValue(pixel_format_string)
 
     def set_acquisition_framerate(self, cam_id: int, framerate: float = None):
@@ -133,7 +133,7 @@ class BaslerCameraArray:
         See the `set_acquisition_framerate` of the `BaslerCamera class` for details.
         """
 
-        cam = self.__get_camera_by_id(cam_id)
+        cam = self._get_camera_by_id(cam_id)
         BaslerCamera.set_acquisition_framerate_helper(cam, framerate)
 
     def set_exposure_time(self, cam_id: int, exposure_time: float):
@@ -148,7 +148,7 @@ class BaslerCameraArray:
         See the `set_exposure_time` of `BaslerCamera` class for details. 
         """
 
-        cam = self.__get_camera_by_id(cam_id)
+        cam = self._get_camera_by_id(cam_id)
         BaslerCamera.set_exposure_time_helper(cam, exposure_time)
 
     def set_aoi(self, cam_id: int, aoi: tuple):
@@ -158,7 +158,7 @@ class BaslerCameraArray:
         :param aoi: a tuple: (offset_x, offset_y, width, height)
         """
 
-        cam = self.__get_camera_by_id(cam_id)
+        cam = self._get_camera_by_id(cam_id)
         
         BaslerCamera.set_aoi_helper(cam, aoi)
 
@@ -180,7 +180,7 @@ class BaslerCameraArray:
 
         """grab one frame from each camera as a list of numpy arrays"""
 
-        camera_array = self.__get_camera_array()
+        camera_array = self._get_camera_array()
 
         size = camera_array.GetSize()
 
@@ -202,7 +202,7 @@ class BaslerCameraArray:
         :param n: the number of frames
         """
 
-        camera_array = self.__get_camera_array()
+        camera_array = self._get_camera_array()
 
         size = camera_array.GetSize()
 
@@ -251,7 +251,7 @@ class BaslerCameraArray:
         and `cam1-5.tiff`, `cam1-6.tiff`, ... for camera 1 
         """
 
-        camera_array = self.__get_camera_array()
+        camera_array = self._get_camera_array()
 
         size = camera_array.GetSize()
 

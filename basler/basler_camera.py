@@ -40,7 +40,7 @@ class BaslerCamera:
             self._device_info.SetSerialNumber(serial_number)
         self._converter = None
 
-    def __get_device(self):
+    def _get_device(self):
         if self._device is None:
             raise NameError('Not initialized')
         return self._device
@@ -49,11 +49,11 @@ class BaslerCamera:
         if self._device is None:
             self._device = pypylon.pylon.InstantCamera(pypylon.pylon.TlFactory.GetInstance().CreateFirstDevice(self._device_info))
         self.set_converter()
-        self.__get_device().Open()
+        self._get_device().Open()
 
     def disconnect(self):
-        if self.__get_device().IsOpen():
-            self.__get_device().Close()
+        if self._get_device().IsOpen():
+            self._get_device().Close()
         self._device = None
 
     def __del__(self):
@@ -67,7 +67,7 @@ class BaslerCamera:
         `Address`, `DeviceClass`, `DeviceID`, `FriendlyName`, `FullName`, `IpAddress`, `ModelName`,
         `SerialNumber`
         """
-        cam = self.__get_device()
+        cam = self._get_device()
         info = {}
         for cam_property in self._PROPERTIES:
 
@@ -82,7 +82,7 @@ class BaslerCamera:
         """return the dynamic range of the image (affected by image format)
         :return: a tuple: (min_value, max_value)
         """
-        cam = self.__get_device()
+        cam = self._get_device()
         dynamic_range = (cam.PixelDynamicRangeMin.GetValue(), cam.PixelDynamicRangeMax.GetValue())
         return dynamic_range
 
@@ -92,7 +92,7 @@ class BaslerCamera:
         :return: a tuple: (offset_x, offset_y, width, height)
         """
 
-        cam = self.__get_device()
+        cam = self._get_device()
         return BaslerCamera.get_aoi_helper(cam)
 
     @staticmethod
@@ -106,7 +106,7 @@ class BaslerCamera:
 
     def get_exposure_time(self):
         """get the exposure time in millisecond (ms)"""
-        cam = self.__get_device()
+        cam = self._get_device()
         exposure_time = BaslerCamera.get_exposure_time_helper(cam)
         return exposure_time
 
@@ -125,7 +125,7 @@ class BaslerCamera:
     def get_resulting_framerate(self):
         """get the resulting frame rate. If frame rate control is not enabled, return None"""
 
-        cam = self.__get_device()
+        cam = self._get_device()
         resulting_framerate = BaslerCamera.get_resulting_framerate_helper(cam)
         return resulting_framerate
 
@@ -151,7 +151,7 @@ class BaslerCamera:
         """set the area of interest (AOI) of the camera.
         :param aoi: a tuple: (offset_x, offset_y, width, height)
         """
-        cam = self.__get_device()
+        cam = self._get_device()
         BaslerCamera.set_aoi_helper(cam, aoi)
 
     @staticmethod
@@ -173,7 +173,7 @@ class BaslerCamera:
         Refer to camera documentation in the Pylon software for details.
         """
 
-        cam = self.__get_device()
+        cam = self._get_device()
         cam.PixelFormat.SetValue(pixel_format_string)
 
     def set_converter(self, convert=True):
@@ -197,7 +197,7 @@ class BaslerCamera:
         :param exposure_time: the exposure time, with unit in millisecond (ms).
         """
 
-        cam = self.__get_device()
+        cam = self._get_device()
         BaslerCamera.set_exposure_time_helper(cam, exposure_time)
 
     @staticmethod
@@ -226,7 +226,7 @@ class BaslerCamera:
         (see the official [Basler Documentation] (https://docs.baslerweb.com/resulting-frame-rate.html))
         and may not equal the "acquisition frame rate" here.
         """
-        cam = self.__get_device()
+        cam = self._get_device()
         BaslerCamera.set_acquisition_framerate_helper(cam, framerate)
 
     @staticmethod
@@ -271,7 +271,7 @@ class BaslerCamera:
     
         """grab one frame and return data as a numpy array"""
 
-        cam = self.__get_device()
+        cam = self._get_device()
         acquired_image = cam.GrabOne(self._TIME_OUT)
         result = self.post_processing(acquired_image).GetArray()
         acquired_image.Release()
@@ -283,7 +283,7 @@ class BaslerCamera:
         :param n: the number of frames
         """
 
-        cam = self.__get_device()
+        cam = self._get_device()
 
         width = cam.Width.GetValue()
         height = cam.Height.GetValue()
@@ -326,7 +326,7 @@ class BaslerCamera:
         Images are saved as 0722-1.tiff, 0722-2.tif, ...
         """
 
-        cam = self.__get_device()
+        cam = self._get_device()
 
         i = 0
 

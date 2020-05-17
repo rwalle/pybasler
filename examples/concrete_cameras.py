@@ -14,18 +14,18 @@ class BaslerPIA160035GM(BaslerCamera):
 
         super().connect()
 
-        cam = self.__get_device()
+        cam = self._get_device()
         cam.GevSCPSPacketSize.SetValue(self._PACKET_SIZE)
         cam.PixelFormat.SetValue(self._PIXEL_FORMAT)
 
     def set_exposure_time(self, exposure_time: float):
 
-        cam = self.__get_device()
+        cam = self._get_device()
         cam.ExposureTimeAbs.SetValue(exposure_time * 1000)
 
     def set_acquisition_framerate(self, framerate: float=None):
 
-        cam = self.__get_device()
+        cam = self._get_device()
         if framerate:
             cam.AcquisitionFrameRateEnable.SetValue(True)
             cam.AcquisitionFrameRateAbs.SetValue(framerate)
@@ -45,17 +45,17 @@ class BaslerAcA1920155um(BaslerCamera):
 
         super().connect()
 
-        cam = self.__get_device()
+        cam = self._get_device()
         cam.PixelFormat.SetValue(self._PIXEL_FORMAT)
 
     def set_exposure_time(self, exposure_time: float):
 
-        cam = self.__get_device()
+        cam = self._get_device()
         cam.ExposureTime.SetValue(exposure_time * 1000)
 
     def set_acquisition_framerate(self, framerate: float=None):
 
-        cam = self.__get_device()
+        cam = self._get_device()
         if framerate:
             cam.AcquisitionFrameRateEnable.SetValue(True)
             cam.AcquisitionFrameRate.SetValue(framerate)
@@ -64,5 +64,5 @@ class BaslerAcA1920155um(BaslerCamera):
 
     def set_gain(self, gain):
 
-        cam = self.__get_device()
+        cam = self._get_device()
         cam.Gain.SetValue(gain)
